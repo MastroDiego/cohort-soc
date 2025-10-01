@@ -1637,7 +1637,7 @@ sub generic_sim_build
     }
 	
     if ($opt{vlt_build}) {
-      $build_cmd = "verilator -cc " ;
+      $build_cmd = "verilator -cc --no-timing " ;
       $build_cmd .= "-exe $dv_root/tools/verilator/my_top.cpp " ;
       $build_cmd .= "$dv_root/tools/pli/iop/b_ary.c " ;
       $build_cmd .= "$dv_root/tools/pli/iop/bw_lib.c " ;
@@ -1735,7 +1735,7 @@ sub generic_sim_build
     }
 
     if ($opt{vlt_build}) {
-      $build_cmd = "make -j -C $model_path/obj_dir -f Vcmp_top.mk Vcmp_top" ;
+      $build_cmd = "make -j8 -C $model_path/obj_dir -f Vcmp_top.mk Vcmp_top" ;
 
       print "$prg: $build_cmd\n";
 

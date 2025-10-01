@@ -49,8 +49,10 @@ interface decoupled_va_if
 		output ack
 	);
 
+	`ifndef VERILATOR
 	`ifndef SYNTHESIS
 		`fpv_valid_ack_if(valid, ack, data)	
+	`endif
 	`endif
 
 

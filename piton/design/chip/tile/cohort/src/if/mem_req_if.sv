@@ -55,12 +55,14 @@ interface mem_req_if (
         input valid, req_type, mshrid, address, size, homeid, write_mask, data_0, data_1
     );
 
-
+    `ifndef VERILATOR
         `assert_hold_valid({req_type, mshrid, address, size, homeid, write_mask, data_0, data_1}, valid, ready, "memory request should hold valid")
 
         `assert_finish_handshake(valid, ready, {req_type, mshrid, address, size, homeid, write_mask, data_0, data_1}, "memory request should finish handshake")
+    `endif
 
 `ifndef SYNTHESIS
+`ifndef VERILATOR
     task initialize();
         ready = 1'b0;
     endtask : initialize
@@ -71,6 +73,7 @@ interface mem_req_if (
             $fatal(1, "Output address is not equal to reference address");
         end
     endtask : check_output
+`endif
 `endif
 
 

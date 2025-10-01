@@ -407,7 +407,7 @@ task check_stub;
             end
         end
         if ((good == finish_mask) && (stub_mask == stub_good)) begin
-            `TOP_MOD.diag_done = 1;
+            //`TOP_MOD.local_diag_done = 1;
             `ifndef VERILATOR
             @(posedge clk);
             `endif
@@ -423,7 +423,7 @@ task set_diag_done;
 
     begin
         if (local_diag_done) begin
-            `TOP_MOD.diag_done = 1;
+            //`TOP_MOD.diag_done = 1;
         end
     end
 endtask

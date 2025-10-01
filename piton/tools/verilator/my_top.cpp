@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Vcmp_top.h"
 #include "verilated.h"
 #include <iostream>
+#include <csignal>
 #ifdef VERILATOR_VCD
 #include "verilated_vcd_c.h"
 #endif
@@ -37,6 +38,9 @@ Vcmp_top* top;
 #ifdef VERILATOR_VCD
 VerilatedVcdC* tfp;
 #endif
+
+extern "C" void init_jbus_model_call(char *str, int oram);
+
 // This is a 64-bit integer to reduce wrap over issues and
 // // allow modulus. You can also use a double, if you wish.
 double sc_time_stamp () { // Called by $time in Verilog
@@ -140,30 +144,47 @@ void reset_and_init() {
     std::cout << "Reset complete" << std::endl << std::flush;
 }
 
+void exit_handler(int _signal) {
+    std::cout << "Interrupted!" << std::endl;
+    
+    #if defined(VERILATOR_VCD) || defined(VERILATOR_FST)
+    std::cout << "Trace done" << std::endl;
+    tfp->close();
+    #endif
+    
+    exit(1);
+}
+
 int main(int argc, char **argv, char **env) {
-std::cout << "Started" << std::endl << std::flush;
-Verilated::commandArgs(argc, argv);
-top = new Vcmp_top;
-std::cout << "Vcmp_top created" << std::endl << std::flush;
+    std::cout << "Started" << std::endl << std::flush;
+    Verilated::commandArgs(argc, argv);
+    top = new Vcmp_top;
+    std::cout << "Vcmp_top created" << std::endl << std::flush;
 
-#ifdef VERILATOR_VCD
-Verilated::traceEverOn(true);
-tfp = new VerilatedVcdC;
-top->trace (tfp, 99);
-tfp->open ("my_top.vcd");
+    #ifdef VERILATOR_VCD
+    Verilated::traceEverOn(true);
+    tfp = new VerilatedVcdC;
+    top->trace (tfp, 99);
+    tfp->open ("my_top.vcd");
 
-Verilated::debug(1);
-#endif
+    Verilated::debug(1);
+    #endif
 
-reset_and_init();
+    std::signal(SIGINT, exit_handler);
+    std::signal(SIGTERM, exit_handler);
+    std::signal(SIGSEGV, exit_handler);
+    std::signal(SIGABRT, exit_handler);
+    std::signal(SIGILL, exit_handler);
 
-while (!Verilated::gotFinish()) { tick(); }
+    reset_and_init();
 
-#ifdef VERILATOR_VCD
-std::cout << "Trace done" << std::endl;
-tfp->close();
-#endif
+    while (!Verilated::gotFinish()) { tick(); }
 
-delete top;
-exit(0);
+    #ifdef VERILATOR_VCD
+    std::cout << "Trace done" << std::endl;
+    tfp->close();
+    #endif
+
+    delete top;
+    exit(0);
 }

@@ -52,6 +52,7 @@ interface config_if (
 
 
 `ifndef SYNTHESIS
+`ifndef VERILATOR
     task set_config(input paddr_t addr_in, data_t data_in);
         $display("Adding configuration");
         @(negedge clk);
@@ -69,6 +70,7 @@ interface config_if (
         set_config(12'hc, 1'b1);
         valid = 1'b0;
     endtask: transact
+`endif
 `endif
 
 endinterface : config_if

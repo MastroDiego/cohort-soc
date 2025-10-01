@@ -37,8 +37,13 @@ module cohort_serdes #(
 	decoupled_vr_if.slave       input_data        ,
 	decoupled_vr_if.master      output_data
 );
-	localparam inputwidth = $bits(input_data.data);
-	localparam outputwidth = $bits(output_data.data);
+	`ifdef VERILATOR
+		localparam inputwidth  = 128;
+		localparam outputwidth =  64;
+	`else
+		localparam inputwidth  = $bits(input_data.data);
+		localparam outputwidth = $bits(output_data.data);
+	`endif //VERILATOR
 
 	logic [15:0] s_counter_r;
 	logic [15:0] s_counter_n;

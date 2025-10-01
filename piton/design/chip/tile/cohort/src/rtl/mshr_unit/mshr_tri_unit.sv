@@ -35,7 +35,11 @@ module mshr_tri_unit #(parameter int unsigned source_num = 4) (
 
 	import tri_pkg::*;
 
-	typedef enum logic [2:0] {S_IDLE, S_LOAD_REQ, S_LOAD_RESP, S_STORE_REQ, S_STORE_RESP, S_U='x} state_t;
+	`ifdef VERILATOR
+		typedef enum logic [2:0] {S_IDLE, S_LOAD_REQ, S_LOAD_RESP, S_STORE_REQ, S_STORE_RESP, S_U='1} state_t;
+	`else	
+		typedef enum logic [2:0] {S_IDLE, S_LOAD_REQ, S_LOAD_RESP, S_STORE_REQ, S_STORE_RESP, S_U='x} state_t;
+	`endif 
 
 	logic [$clog2(source_num):0] index_r, index_n; // index for the arbiter
 

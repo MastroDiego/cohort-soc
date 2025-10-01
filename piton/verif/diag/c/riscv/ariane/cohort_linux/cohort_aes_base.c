@@ -168,6 +168,7 @@ int main(int argc, char ** argv) {
     id = 0;
     core_num = 1;
 #endif
+    printf("Hellow_world \n");
     // only make the first ariane initialize the tile
     if (id == 0) init_tile(NUM_A);
     if (id == 1) while(true);
