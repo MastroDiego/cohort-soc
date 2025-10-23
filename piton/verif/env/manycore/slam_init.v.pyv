@@ -23,7 +23,7 @@
 `include "iop.h"
 `include "cross_module.tmp.h"
 
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
 
 <%
     import os
@@ -1433,4 +1433,4 @@ initial begin
 end // initial
 
 endmodule
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING

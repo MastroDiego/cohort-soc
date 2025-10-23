@@ -62,7 +62,7 @@ interface mem_req_if (
     `endif
 
 `ifndef SYNTHESIS
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     task initialize();
         ready = 1'b0;
     endtask : initialize

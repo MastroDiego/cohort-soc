@@ -29,7 +29,7 @@
 //
 ////////////////////////////////////////////////////////
 
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
 
 `define FPOP1_RQ 5'b01010
 `define FPOP2_RQ 5'b01011
@@ -1291,4 +1291,4 @@ endtask
 
 `endif	// ifdef GATE_SIM
 endmodule
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING

@@ -45,7 +45,7 @@ import "DPI-C" function void init_jbus_model_call(string str, int oram);
 
 `timescale 1ps/1ps
 module cmp_top (
-`ifdef VERILATOR
+`ifdef VERILATOR_NO_TIMING
 input reg                             core_ref_clk,
 
 input reg                             sys_rst_n,
@@ -68,7 +68,7 @@ input                                 ok_iob
 // Type Declarations
 //////////////////////
 
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
 reg                             core_ref_clk;
 reg                             sys_rst_n;
 reg                             pll_rst_n;
@@ -81,7 +81,7 @@ reg                             async_mux;
 // For simulation only, monitor stuff.  Only cross-module referenced
 // do not delete.
 reg                             diag_done;
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
 
 reg                             io_clk;
 reg                             jtag_clk;
@@ -115,7 +115,7 @@ reg [3:0]                       stub_pass;
 // Simulated Clocks
 ////////////////////
 
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
 `ifndef USE_FAKE_PLL_AND_CLKMUX
 always #5000 core_ref_clk = ~core_ref_clk;                      // 100MHz
 `else
@@ -129,7 +129,7 @@ always #1429 io_clk = ~io_clk;                                  // 350MHz
 always @ * io_clk = core_ref_clk;
 `endif
 
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
 always #50000 jtag_clk = ~jtag_clk;                             // 10MHz
 
 always #2500 chipset_clk_osc_p = ~chipset_clk_osc_p;            // 200MHz
@@ -154,7 +154,14 @@ always #25000 spi_sys_clk = ~spi_sys_clk;                       // 20MHz
 // SIMULATED BOOT SEQUENCE
 ////////////////////////////////////////////////////////
 
-`ifndef VERILATOR
+`ifdef TRACE_VCD
+initial begin
+  $dumpfile("trace.vcd");
+  $dumpvars;
+end
+`endif
+
+`ifndef VERILATOR_NO_TIMING
 initial
 begin
     // These are not referenced elsewhere in this module,
@@ -265,7 +272,7 @@ begin
 end
 `endif
 
-`ifdef VERILATOR
+`ifdef VERILATOR_NO_TIMING
 always @(posedge ok_iob) begin
     cmp_top.system.chipset.chipset_impl.ciop_fake_iob.ok_iob = 1'b1;
 end
@@ -315,7 +322,7 @@ system system(
     .chipset_clk_osc(chipset_clk_osc),
 `endif // endif PITON_CHIPSET_DIFF_CLK
 `else // ifndef PITON_CHIPSET_CLKS_GEN
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     .chipset_clk(chipset_clk),
 `else
     .chipset_clk(core_ref_clk),
@@ -430,6 +437,55 @@ system system(
 // MONITOR STUFF
 ////////////////////////////////////////////////////////
 
+initial begin
+`ifdef SYNC_MUX
+  $display("[%0t] SYNC_MUX=1: io_clk tied to core_ref_clk", $time);
+`else
+  $display("[%0t] SYNC_MUX=0: io_clk free-running (#1429)", $time);
+`endif
+  $printtimescale;
+end
+
+// Clock frequency measurement
+real core_clk_period_ps, io_clk_period_ps;
+real core_clk_freq_mhz, io_clk_freq_mhz;
+time core_clk_last_edge, io_clk_last_edge;
+
+initial begin
+  core_clk_last_edge = 0;
+  io_clk_last_edge = 0;
+  
+  // Wait for clocks to stabilize
+  #100000;
+  
+  // Measure after 100ns
+  @(posedge core_ref_clk);
+  core_clk_last_edge = $time;
+  @(posedge core_ref_clk);
+  core_clk_period_ps = $time - core_clk_last_edge;
+  core_clk_freq_mhz = 1000000.0 / core_clk_period_ps;
+  
+  @(posedge io_clk);
+  io_clk_last_edge = $time;
+  @(posedge io_clk);
+  io_clk_period_ps = $time - io_clk_last_edge;
+  io_clk_freq_mhz = 1000000.0 / io_clk_period_ps;
+  
+  $display("========================================");
+  $display("CLOCK FREQUENCY REPORT @ %0t ps", $time);
+  $display("========================================");
+  $display("core_ref_clk: period=%0.2f ps, freq=%0.2f MHz", 
+           core_clk_period_ps, core_clk_freq_mhz);
+  $display("io_clk:       period=%0.2f ps, freq=%0.2f MHz", 
+           io_clk_period_ps, io_clk_freq_mhz);
+  $display("Clock ratio:  io/core = %0.3f", io_clk_freq_mhz/core_clk_freq_mhz);
+`ifdef SYNC_MUX
+  $display("SYNC_MUX:     ENABLED (io_clk tied to core_ref_clk)");
+`else
+  $display("SYNC_MUX:     DISABLED (io_clk free-running)");
+`endif
+  $display("========================================");
+end
 
 `ifndef DISABLE_ALL_MONITORS
 
@@ -500,7 +556,7 @@ system system(
             print(tt)
     %>
 
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     // T1's TSO monitor, stripped of all L2 references
     tso_mon tso_mon(`CHIP_INT_CLK, `CHIP.rst_n_inter_sync);
 `endif

@@ -52,7 +52,7 @@ interface config_if (
 
 
 `ifndef SYNTHESIS
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     task set_config(input paddr_t addr_in, data_t data_in);
         $display("Adding configuration");
         @(negedge clk);

@@ -42,7 +42,7 @@ input rst_l;
 // trap register
 <%
     tt1 = r'''
-    `ifndef VERILATOR
+    `ifndef VERILATOR_NO_TIMING
     reg [31:0]   finish_mask;
     `else
     integer      finish_mask;
@@ -313,7 +313,7 @@ task trap_extract;
 %>
         if($value$plusargs("stub_mask=%h", stub_mask))    $display ("%t: stub_mask  %h", $time, stub_mask);
 
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
         for(i = 0; i < `PITON_NUM_TILES;i = i + 1)if(finish_mask[i] === 1'bx)finish_mask[i] = 1'b0;
         for(i = 0; i < 8;i = i + 1) if(stub_mask[i] === 1'bx)stub_mask[i] = 1'b0;
 `endif
@@ -408,7 +408,7 @@ task check_stub;
         end
         if ((good == finish_mask) && (stub_mask == stub_good)) begin
             //`TOP_MOD.local_diag_done = 1;
-            `ifndef VERILATOR
+            `ifndef VERILATOR_NO_TIMING
             @(posedge clk);
             `endif
             $display("Info->Simulation terminated by stub.");
@@ -509,7 +509,7 @@ always @(posedge clk)begin
                            (stub_mask == stub_good))
                         begin
                             local_diag_done = 1;
-                            `ifndef VERILATOR
+                            `ifndef VERILATOR_NO_TIMING
                             @(posedge clk);
                             `endif
                             $display("%0d: Simulation -> PASS (HIT GOOD TRAP)", $time);

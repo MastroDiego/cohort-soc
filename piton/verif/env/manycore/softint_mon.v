@@ -116,7 +116,7 @@ module softint_mon(/*AUTOARG*/
 
   //=========================
   // SOFTINT0 register update
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -138,7 +138,7 @@ module softint_mon(/*AUTOARG*/
       local_softint0[14:1] <= local_softint0[14:1];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -161,7 +161,7 @@ module softint_mon(/*AUTOARG*/
       local_softint0[0] <= local_softint0[0];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -184,7 +184,7 @@ module softint_mon(/*AUTOARG*/
       local_softint0[16] <= local_softint0[16];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -219,15 +219,15 @@ module softint_mon(/*AUTOARG*/
         $display("*WARNING*: %0d: softint_mon: Thread0 SOFTINT register MISMATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint0[16:0], local_softint0[16:0]);
       end
     end
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     else begin
       $display("*Info*: %0d: softint_mon: Thread0 SOFTINT register MATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint0[16:0], local_softint0[16:0]);
     end
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
   end
   //=========================
   // SOFTINT1 register update
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -249,7 +249,7 @@ module softint_mon(/*AUTOARG*/
       local_softint1[14:1] <= local_softint1[14:1];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -272,7 +272,7 @@ module softint_mon(/*AUTOARG*/
       local_softint1[0] <= local_softint1[0];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -295,7 +295,7 @@ module softint_mon(/*AUTOARG*/
       local_softint1[16] <= local_softint1[16];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -330,15 +330,15 @@ module softint_mon(/*AUTOARG*/
         $display("*WARNING*: %0d: softint_mon: Thread1 SOFTINT register MISMATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint1[16:0], local_softint1[16:0]);
       end
     end
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     else begin
       $display("*Info*: %0d: softint_mon: Thread1 SOFTINT register MATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint1[16:0], local_softint1[16:0]);
     end
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
   end
   //=========================
   // SOFTINT2 register update
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -360,7 +360,7 @@ module softint_mon(/*AUTOARG*/
       local_softint2[14:1] <= local_softint2[14:1];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -383,7 +383,7 @@ module softint_mon(/*AUTOARG*/
       local_softint2[0] <= local_softint2[0];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -406,7 +406,7 @@ module softint_mon(/*AUTOARG*/
       local_softint2[16] <= local_softint2[16];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -441,15 +441,15 @@ module softint_mon(/*AUTOARG*/
         $display("*WARNING*: %0d: softint_mon: Thread2 SOFTINT register MISMATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint2[16:0], local_softint2[16:0]);
       end
     end
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     else begin
       $display("*Info*: %0d: softint_mon: Thread2 SOFTINT register MATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint2[16:0], local_softint2[16:0]);
     end
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
   end
   //=========================
   // SOFTINT3 register update
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -471,7 +471,7 @@ module softint_mon(/*AUTOARG*/
       local_softint3[14:1] <= local_softint3[14:1];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -494,7 +494,7 @@ module softint_mon(/*AUTOARG*/
       local_softint3[0] <= local_softint3[0];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -517,7 +517,7 @@ module softint_mon(/*AUTOARG*/
       local_softint3[16] <= local_softint3[16];
     end
   end // always
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
   always @(posedge rtl_clk or rtl_reset) begin
 `else
   always @(posedge rtl_clk) begin
@@ -552,11 +552,11 @@ module softint_mon(/*AUTOARG*/
         $display("*WARNING*: %0d: softint_mon: Thread3 SOFTINT register MISMATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint3[16:0], local_softint3[16:0]);
       end
     end
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     else begin
       $display("*Info*: %0d: softint_mon: Thread3 SOFTINT register MATCH: RTL(17'h%x) Vs Expected(17'h%x)", $time, rtl_softint3[16:0], local_softint3[16:0]);
     end
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
   end
 
 endmodule

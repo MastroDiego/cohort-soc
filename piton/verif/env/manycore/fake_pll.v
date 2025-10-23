@@ -45,7 +45,7 @@ assign clk_out = ref_clk;
 // Non-synthesizeable locked logic
 // Starts out as 0 and changes to 1 100 ref_clk
 // cycles after falling edge of reset (deasserting reset)
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
 initial
 begin
     force clk_locked = 1'b0;

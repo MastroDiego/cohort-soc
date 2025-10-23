@@ -37,6 +37,7 @@ module cohort_serdes #(
 	decoupled_vr_if.slave       input_data        ,
 	decoupled_vr_if.master      output_data
 );
+	
 	`ifdef VERILATOR
 		localparam inputwidth  = 128;
 		localparam outputwidth =  64;
@@ -50,9 +51,11 @@ module cohort_serdes #(
 	logic [15:0] d_counter_r;
 	logic [15:0] d_counter_n;
 
-	initial begin
-		assert (inputwidth*serialization_ratio == outputwidth*deserialization_ratio) else $fatal("Width Mismatch");
-	end
+	`ifndef SYNTHESIS
+		initial begin
+			assert (inputwidth*serialization_ratio == outputwidth*deserialization_ratio) else $fatal("Width Mismatch");
+		end
+	`endif
 
 	logic [inputwidth*serialization_ratio - 1: 0] intermediate_data;
 	logic [inputwidth*serialization_ratio - 1: 0] intermediate_data_next;

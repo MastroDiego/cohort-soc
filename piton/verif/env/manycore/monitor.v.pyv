@@ -51,11 +51,11 @@ module monitor(/*AUTOARG*/
 	num    = 0;
 	err_f  = 1;
 	bad    = 0;
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
 	max_cycle = 30000;
-`else // ifndef VERILATOR
+`else // ifndef VERILATOR_NO_TIMING
 	max_cycle = 1500000;
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
 	cycle  = 0;
 	if($value$plusargs("wait_cycle_to_kill=%d", number))$display("wait cycles = %d", number);
 	if($value$plusargs("max_cycle=%d", max_cycle))$display("max cycles = %d", max_cycle);
@@ -1178,7 +1178,7 @@ module monitor(/*AUTOARG*/
         if (`SPARC_CORE0.sparc0.lsu.lsu.qctl2.dfq_vld_en && (`SPARC_CORE0.sparc0.lsu.lsu.qctl2.lsu_cpu_inv_data_val === 1'bx))
         begin
             $display("%d : Simulation -> FAIL(%0s)", $time, "TILE0 lsu received X invalidation");
-            `ifndef VERILATOR
+            `ifndef VERILATOR_NO_TIMING
             repeat(5)@(posedge clk);
             `endif
             `MONITOR_PATH.fail("TILE0 lsu received X invalidation");
@@ -1190,7 +1190,7 @@ module monitor(/*AUTOARG*/
             if (|`SPARC_CORE0.sparc0.lsu.lsu.qctl2.lsu_cpu_inv_data_way === 1'bx)
             begin
                 $display("%d : Simulation -> FAIL(%0s)", $time, "TILE0 lsu received invalid way invalidation");
-                `ifndef VERILATOR
+                `ifndef VERILATOR_NO_TIMING
                 repeat(5)@(posedge clk);
                 `endif
                 `MONITOR_PATH.fail("TILE0 lsu received invalid way invalidation");
@@ -1217,13 +1217,13 @@ module monitor(/*AUTOARG*/
 
 
 `ifdef RTL_SPARC0
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
    tso_mon tso_mon0( .clk       (clk), .rst_l   (rst_l));
 `endif
 
    lsu_mon lsu_mon0( .clk       (clk), .rst_l   (rst_l));
    lsu_mon2 lsu_mon2( .clk       (clk), .rst_l   (rst_l));
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
    multicycle_mon multicycle_mon(.clk       (clk), .rst_l   (rst_l));
 `endif
 

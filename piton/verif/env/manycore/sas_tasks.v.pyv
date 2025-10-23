@@ -186,21 +186,21 @@ reg       inst_checker_off;
 `else
 initial begin
     in_used = 0;
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     if($value$plusargs("cpu_num=%d", cpu_num))
         $display("Info:Number of cpu = %d", cpu_num);
     else cpu_num = 0;
-`else // ifndef VERILATOR
+`else // ifndef VERILATOR_NO_TIMING
     cpu_num = 0;
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
     dead_socket      = 0;
     inst_checker_off = 0;
-`ifndef VERILATOR
+`ifndef VERILATOR_NO_TIMING
     if($value$plusargs("inst_check_off=%d", inst_checker_off))begin
         $display("Info:instruction checker is on", inst_checker_off);
         inst_checker_off =1;
     end
-`endif // ifndef VERILATOR
+`endif // ifndef VERILATOR_NO_TIMING
 end // initial begin
 
 `ifdef SAS_DISABLE

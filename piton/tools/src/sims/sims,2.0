@@ -245,6 +245,7 @@ Getopt::Long::Configure ('no_auto_abbrev') ;
         'vcs_use_initreg' => 0,
         'vcs_use_sdf' => 0,
         'vlt_build' => 0,
+        'vlt_build_no_timing' => 0,
         'vlt_build_args' => [],
         'vlt_run' => 0,
         'version' => 0,
@@ -1637,8 +1638,17 @@ sub generic_sim_build
     }
 	
     if ($opt{vlt_build}) {
-      $build_cmd = "verilator -cc --no-timing " ;
-      $build_cmd .= "-exe $dv_root/tools/verilator/my_top.cpp " ;
+      $build_cmd = "verilator -cc --main " ;
+      if ($opt{vlt_build_no_timing}) {
+        $build_cmd .= "--no-timing " ;
+        $build_cmd .= "-exe $dv_root/tools/verilator/my_top.cpp " ;
+        $build_cmd .= "-CFLAGS -DVERILATOR_NO_TIMING " ;
+      } else {
+        $build_cmd .= "--timing -exe --build -j 8 " 
+      }
+      if ($opt{vcd}) {
+        $build_cmd .= "--trace-vcd " ;
+      }
       $build_cmd .= "$dv_root/tools/pli/iop/b_ary.c " ;
       $build_cmd .= "$dv_root/tools/pli/iop/bw_lib.c " ;
       $build_cmd .= "$dv_root/tools/pli/iop/iob_main.cc " ;
@@ -1734,7 +1744,7 @@ sub generic_sim_build
       die ("DIE. failed building model") if ($?) ;
     }
 
-    if ($opt{vlt_build}) {
+    if ($opt{vlt_build_no_timing}) {
       $build_cmd = "make -j8 -C $model_path/obj_dir -f Vcmp_top.mk Vcmp_top" ;
 
       print "$prg: $build_cmd\n";
@@ -2796,6 +2806,7 @@ sub parse_args
             'vfile=s@',
             'vhdlfile=s@',
             'vlt_build!',
+            'vlt_build_no_timing!',
             'vlt_build_args=s@',
             'vlt_run!',
             'num_tile=s',
@@ -2944,6 +2955,10 @@ sub parse_args
 
   $ENV{PITON_RV64_PLATFORM}   = "1" if ($opt{rv64_platform});
   push (@{$opt{config_rtl}}, "PITON_PICO_HET") if ($opt{pico_het});
+  
+  # VERILATOR SPECIFIC 
+  push (@{$opt{config_rtl}}, "VERILATOR_NO_TIMING")     if ($opt{vlt_build_no_timing});
+  push (@{$opt{config_rtl}}, "TRACE_VCD")     if ($opt{vcd});
 
   my $pton_x_tiles="";
   my $pton_y_tiles="";
@@ -3025,7 +3040,7 @@ sub parse_args
   # Push optional dmbr enable
   push (@{$opt{midas_args}}, "-DDMBR_ENABLE") if ($opt{dmbr});
 
-  if ($opt{vcs_build} or $opt{ncv_build} or $opt{riv_build}) {
+  if ($opt{vcs_build} or $opt{ncv_build} or $opt{riv_build} or ($opt{vlt_build} and !$opt{vlt_build_no_timing})) {
       push(@{$opt{config_rtl}}, "OST1_PLI_SLAM_RANDOM") ;
       push(@{$opt{config_rtl}}, "OST1_PLI_MRA_VAL") ;
   }
